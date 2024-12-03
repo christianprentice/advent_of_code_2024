@@ -9,6 +9,13 @@ import (
 	"strconv"
 )
 
+// Some crazy function I found on https://zenn.dev/nnabeyang/articles/22c0c1c3665646
+const intSize = 32 << (^uint(0) >> 63)
+func abs(v int) int {
+    y := v >> (intSize - 1)
+    return (v ^ y) - y
+}
+
 func main(){
     file , err := os.Open("input")
     if err != nil {
@@ -45,6 +52,8 @@ func main(){
     sort.Ints(left)
     sort.Ints(right)
 
+    /*
+    NOTE: extraction code
     fmt.Println("Left:")
     for _, num := range left {
         fmt.Println(num)
@@ -54,4 +63,14 @@ func main(){
     for _, num := range right {
         fmt.Println(num)
     }
+    */
+
+    var result int = 0
+
+    for i := 0; i < 1000; i++ {
+        result += abs(left[i] - right[i])
+    }
+
+    // Tada!
+    fmt.Println(result)
 }
