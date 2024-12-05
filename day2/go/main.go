@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 )
 
 // Some crazy function I found on https://zenn.dev/nnabeyang/articles/22c0c1c3665646
@@ -31,7 +32,7 @@ func checkSafe(tail byte, head byte, isAscending bool) bool {
 
 func main(){
     safeCount := 0
-    file , err := os.Open("input")
+    file , err := os.Open("../input")
     if err != nil {
         log.Fatal(err)
     }
@@ -39,15 +40,19 @@ func main(){
 
     scanner := bufio.NewScanner(file)
 
+    OUTER:
     for i := 0; scanner.Scan() && i < 1000; i++ {
         line := scanner.Text()
+        lineList := strings.Fields(line)
         // check head and trailing tail if ascending
-        isAscending := line[0] > line[2]
-        for j := 2; scanner.Scan() && j < 5; j += 2 {
-            if !checkSafe(line[j], line[j+2], isAscending) {
-                break
+        isAscending := lineList[0] < lineList[1]
+        for j := 1; j < len(lineList)-1; j++ {
+            if !checkSafe(line[j], line[j+1], isAscending) {
+                // nice
+                continue OUTER
             }
         }
+        // countup if safe
         safeCount++
     }
 
