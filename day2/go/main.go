@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -15,17 +16,23 @@ func abs(v int) int {
     return (v ^ y) - y
 }
 
-func checkSafe(tail byte, head byte, isAscending bool) bool {
+func checkSafe(tail int, head int, isAscending bool) bool {
     //casting is needed to use the `abs()` function
-    tailValue := int(tail)
-    headValue := int(head)
-    if isAscending && tailValue < headValue {
+    fmt.Println("Checking if safe for: ", tail, head, isAscending)
+    if isAscending && (tail > head) {
+        fmt.Println("1st condition checked")
         return false
-    } else if abs(tailValue - headValue) > 3 {
+    } else if !isAscending && (tail < head) {
+        fmt.Println("2nd condition checked")
         return false
-    }else if tailValue == headValue {
+    } else if abs(tail - head) > 3 {
+        fmt.Println("3rd condition checked")
+        return false
+    }else if tail == head {
+        fmt.Println("4th condition checked")
         return false
     } else {
+        fmt.Println("Safe")
         return true
     }
 }
@@ -44,10 +51,20 @@ func main(){
     for i := 0; scanner.Scan() && i < 1000; i++ {
         line := scanner.Text()
         lineList := strings.Fields(line)
-        // check head and trailing tail if ascending
-        isAscending := lineList[0] < lineList[1]
-        for j := 1; j < len(lineList)-1; j++ {
-            if !checkSafe(line[j], line[j+1], isAscending) {
+        fmt.Println(lineList)
+        intList := make([]int, len(lineList))
+        for j, str := range lineList {
+            num, err := strconv.Atoi(str)
+            if err != nil {
+                fmt.Println("Error converting string to integer:", err)
+                continue
+            }
+            intList[j] = num
+        }
+        for j := 0; j < len(intList)-1; j++ {
+            fmt.Println("Checking: lineList", intList, "Values: ", intList[j], intList[j+1])
+            // check head and trailing tail if ascending
+            if !checkSafe(intList[j], intList[j+1], intList[0] < intList[1]) {
                 // nice
                 continue OUTER
             }
