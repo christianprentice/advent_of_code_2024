@@ -16,8 +16,8 @@ func main(){
     }
     defer file.Close()
 
-    left := make(map[int]int)
-    right := make(map[int]int)
+    left := make([]int, 0)
+    rightCounts := make(map[int]int)
 
     scanner := bufio.NewScanner(file)
     for i := 0; scanner.Scan(); i++ {
@@ -32,16 +32,16 @@ func main(){
             log.Fatal(err)
         }
 
-        left[leftNum] = left[leftNum] + 1
-        right[rightNum] = right[rightNum] + 1
+        left = append(left, leftNum)
+        rightCounts[rightNum]++
     }
     if err := scanner.Err(); err != nil {
         log.Fatal(err)
     }
 
     similarityScore := 0
-    for leftVal, count := range left {
-        similarityScore += leftVal * count
+    for _, leftVal := range left {
+        similarityScore += leftVal * rightCounts[leftVal]
     }
 
     fmt.Println(similarityScore)
